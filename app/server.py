@@ -1,4 +1,3 @@
-
 import aiohttp
 import asyncio
 import uvicorn
@@ -12,10 +11,16 @@ from starlette.staticfiles import StaticFiles
 import torch
 torch.nn.Module.dump_patches = True
 
-export_file_url = 'https://drive.google.com/uc?export=download&id=1-qE7Z1Z4htGkgY4h0kmZdPTCRZ376wYw'
+
+# export_file_url = 'https://www.dropbox.com/s/v6cuuvddq73d1e0/export.pkl?raw=1'
+export_file_url = 'https://drive.google.com/uc?export=download&id=1QzLupiw53K7IRvy52QxwWs5Tnu5zmQUM'
 export_file_name = 'export.pkl'
 
-classes = ['cataract', 'glaucoma', 'normal', 'retina_disease']
+classes = ['akiec', 'bcc', 'bkl', 'df', 'mel', 'nv', 'vasc']
+full_classes = ["""Actinic keratoses and intraepithelial carcinoma / Bowen's disease""","""Basal cell carcinoma """,
+"""Benign keratosis-like lesions (solar lentigines / seborrheic keratoses and lichen-planus like keratoses)""",
+"Dermatofibroma","Melanoma","Melanocytic Nevi","Vascular lesions (angiomas, angiokeratomas, pyogenic granulomas and hemorrhage)"]
+dict_ = {val:key for key,val in zip(full_classes,classes)}
 path = Path(__file__).parent
 
 app = Starlette()
@@ -63,8 +68,21 @@ async def analyze(request):
     img_data = await request.form()
     img_bytes = await (img_data['file'].read())
     img = open_image(BytesIO(img_bytes))
+    # prediction = learn.predict(img)
+    # pred = re.findall('(.*?);',str(prediction)+';')
+    # print(prediction)
+    # pred = prediction[0].obj[-1]
     prediction = learn.predict(img)[0]
     return JSONResponse({'result': str(prediction)})
+    # out = sorted(zip(learn.data.classes, map(float, prediction[1])),key=lambda p: p[1],reverse=True)
+    # # out_ = [dict_[i[0]] for i in out if i[1] == 1.0]
+    # out_ = []
+    # for i in out:
+    # 	if i[1] == 1.0 and i[0] in dict_:
+    # 		out_.append(dict_[i[0]])
+    # 	out_.append('bcc')
+
+    # return JSONResponse({'result': out_ })
 
 
 if __name__ == '__main__':
