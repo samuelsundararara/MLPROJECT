@@ -1,3 +1,4 @@
+
 import aiohttp
 import asyncio
 import uvicorn
@@ -8,6 +9,8 @@ from starlette.applications import Starlette
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse, JSONResponse
 from starlette.staticfiles import StaticFiles
+import torch
+torch.nn.Module.dump_patches = True
 
 export_file_url = 'https://drive.google.com/uc?export=download&id=1-qE7Z1Z4htGkgY4h0kmZdPTCRZ376wYw'
 export_file_name = 'export.pkl'
